@@ -1,0 +1,147 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Tenant {
+  id          String   @id @default(cuid())
+  name        String
+  emailDomain String?
+  shops       Shop[]
+  users       User[]
+  createdAt   DateTime @default(now())
+}
+
+model User {
+  id        String   @id @default(cuid())
+  tenantId  String
+  tenant    Tenant   @relation(fields: [tenantId], references: [id])
+  email     String   @unique
+  password  String
+  role      String   @default("viewer")
+  createdAt DateTime @default(now())
+}
+
+model Shop {
+  id           String    @id @default(cuid())
+  tenantId     String
+  tenant       Tenant    @relation(fields: [tenantId], references: [id])
+  shopDomain   String    @unique
+  accessToken  String
+  name         String?
+  currency     String?   @default("INR")
+  timezone     String?   @default("Asia/Kolkata")
+  lastSyncedAt DateTime?
+  customers    Customer[]
+  products     Product[]
+  orders       Order[]
+  webhookEvents WebhookEvent[]
+  ingestionJobs IngestionJob[]
+  createdAt    DateTime  @default(now())
+}
+
+model Customer {
+  id          String   @id @default(cuid())
+  tenantId    String
+  shopId      String
+  shopifyId   BigInt
+  email       String?
+  firstName   String?
+  lastName    String?
+  phone       String?
+  totalSpent  Decimal   @default(0)
+  ordersCount Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  shop Shop @relation(fields: [shopId], references: [id])
+
+  @@unique([shopId, shopifyId])
+  @@index([tenantId])
+}
+
+model Product {
+  id          String   @id @default(cuid())
+  tenantId    String
+  shopId      String
+  shopifyId   BigInt
+  title       String
+  status      String?
+  vendor      String?
+  productType String?
+  priceMin    Decimal?
+  priceMax    Decimal?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  shop Shop @relation(fields: [shopId], references: [id])
+
+  @@unique([shopId, shopifyId])
+  @@index([tenantId])
+}
+
+model Order {
+  id            String   @id @default(cuid())
+  tenantId      String
+  shopId        String
+  shopifyId     BigInt
+  customerId    String?
+  currency      String?
+  totalPrice    Decimal  @default(0)
+  subtotalPrice Decimal?
+  totalTax      Decimal?
+  totalDiscount Decimal?
+  processedAt   DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  customer Customer? @relation(fields: [customerId], references: [id])
+  shop     Shop      @relation(fields: [shopId], references: [id])
+  items    OrderLineItem[]
+
+  @@unique([shopId, shopifyId])
+  @@index([tenantId, processedAt])
+}
+
+model OrderLineItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  productId String?
+  variantId BigInt?
+  quantity  Int
+  price     Decimal
+  title     String?
+
+  order   Order   @relation(fields: [orderId], references: [id])
+  product Product? @relation(fields: [productId], references: [id])
+}
+
+model WebhookEvent {
+  id        String   @id @default(cuid())
+  tenantId  String
+  shopId    String
+  topic     String
+  payload   Json
+  receivedAt DateTime @default(now())
+
+  shop Shop @relation(fields: [shopId], references: [id])
+  @@index([tenantId, topic, receivedAt])
+}
+
+model IngestionJob {
+  id        String   @id @default(cuid())
+  tenantId  String
+  shopId    String
+  type      String
+  status    String
+  startedAt DateTime?
+  finishedAt DateTime?
+  detail    Json?
+
+  shop Shop @relation(fields: [shopId], references: [id])
+  @@index([tenantId, status])
+}
