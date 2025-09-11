@@ -1,8 +1,10 @@
+import './globals.css'
+
 export default function RootLayout({ children }) {
     return (
       <html lang="en">
-        <body>
-          <div className="container mx-auto p-6">{children}</div>
+        <body className="bg-gray-50">
+          <div className="min-h-screen">{children}</div>
         </body>
       </html>
     );
