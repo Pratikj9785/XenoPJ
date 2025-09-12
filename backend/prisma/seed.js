@@ -22,8 +22,8 @@ async function main() {
     create: {
       id: 'demo-shop',
       tenantId: tenant.id,
-      shopDomain: 'demo-shop.myshopify.com',
-      accessToken: 'demo-access-token',
+      shopDomain: 'pbg9g4-vy.myshopify.com',
+      accessToken: process.env.SHOPIFY_ACCESS_TOKEN,
       name: 'Demo Shop',
       isActive: true,
     },
