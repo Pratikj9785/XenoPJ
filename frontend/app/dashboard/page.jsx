@@ -1,5 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { getToken, getShopIdFromToken } from '../../lib/auth';
 import { 
   getOverview, 
   getTopCustomers, 
@@ -38,7 +40,23 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(false);
   const [from, setFrom] = useState('2025-08-01');
   const [to, setTo] = useState('2025-09-09');
-  const shopId = 'demo-shop';
+  const [shopId, setShopId] = useState(null);
+
+  const router = useRouter();
+
+  useEffect(() => {
+    const token = getToken();
+    if (!token) {
+      router.replace('/signin');
+      return;
+    }
+    const id = getShopIdFromToken();
+    if (!id) {
+      router.replace('/signin');
+      return;
+    }
+    setShopId(id);
+  }, [router]);
 
   const loadDashboardData = async () => {
     setLoading(true);
@@ -76,8 +94,10 @@ export default function Dashboard() {
   };
 
   useEffect(() => {
-    loadDashboardData();
-  }, [from, to]);
+    if (shopId) {
+      loadDashboardData();
+    }
+  }, [from, to, shopId]);
 
   const handleSimulateEvents = async () => {
     try {
@@ -95,6 +115,7 @@ export default function Dashboard() {
     </div>
   );
 
+  if (!shopId) return null;
   if (!overview) return <div>Error loading dashboard data</div>;
 
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8'];

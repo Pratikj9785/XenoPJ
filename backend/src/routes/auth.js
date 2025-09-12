@@ -19,28 +19,35 @@ router.post('/register', async (req, res) => {
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create user and shop in a transaction
+    // Create tenant, user and shop in a single transaction
     const result = await prisma.$transaction(async (tx) => {
-      // Create user
+      // Create tenant first (required by FK)
+      const tenant = await tx.tenant.create({
+        data: {
+          name: shopName || (email?.split('@')[1] ?? 'Tenant')
+        }
+      });
+
+      // Create user linked to tenant
       const user = await tx.user.create({
         data: {
           email,
           password: hashedPassword,
-          tenantId: `tenant-${Date.now()}`, // Generate unique tenant ID
+          tenantId: tenant.id,
         },
       });
 
-      // Create shop
+      // Create shop linked to same tenant
       const shop = await tx.shop.create({
         data: {
-          tenantId: user.tenantId,
+          tenantId: tenant.id,
           shopDomain,
           name: shopName,
-          accessToken: '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', // This would come from Shopify OAuth
+          accessToken: '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', // Placeholder; replace with OAuth token
         },
       });
 
-      return { user, shop };
+      return { tenant, user, shop };
     });
 
     // Generate JWT token
@@ -51,7 +58,7 @@ router.post('/register', async (req, res) => {
         storeId: result.shop.id,
         tenantId: result.user.tenantId 
       },
-      process.env.JWT_SECRET,
+      process.env.JWT_SECRET || require('../config').config.jwtSecret,
       { expiresIn: '7d' }
     );
 
@@ -110,7 +117,7 @@ router.post('/login', async (req, res) => {
         storeId: primaryShop.id,
         tenantId: user.tenantId 
       },
-      process.env.JWT_SECRET,
+      process.env.JWT_SECRET || require('../config').config.jwtSecret,
       { expiresIn: '7d' }
     );
 

@@ -62,15 +62,21 @@ class Scheduler {
         } catch (error) {
           console.error(`Delta sync failed for shop ${shop.shopDomain}:`, error);
           
-          // Update job status to failed
-          await prisma.ingestionJob.update({
+          // Update job status to failed (find latest running job for this shop)
+          const latestRunning = await prisma.ingestionJob.findFirst({
             where: { shopId: shop.id, status: 'running' },
-            data: { 
-              status: 'failed', 
-              finishedAt: new Date(),
-              detail: { error: String(error) }
-            }
+            orderBy: { startedAt: 'desc' }
           });
+          if (latestRunning) {
+            await prisma.ingestionJob.update({
+              where: { id: latestRunning.id },
+              data: { 
+                status: 'failed', 
+                finishedAt: new Date(),
+                detail: { error: String(error) }
+              }
+            });
+          }
         }
       }
     } catch (error) {
@@ -117,15 +123,21 @@ class Scheduler {
         } catch (error) {
           console.error(`Full sync failed for shop ${shop.shopDomain}:`, error);
           
-          // Update job status to failed
-          await prisma.ingestionJob.update({
+          // Update job status to failed (find latest running job for this shop)
+          const latestRunning = await prisma.ingestionJob.findFirst({
             where: { shopId: shop.id, status: 'running' },
-            data: { 
-              status: 'failed', 
-              finishedAt: new Date(),
-              detail: { error: String(error) }
-            }
+            orderBy: { startedAt: 'desc' }
           });
+          if (latestRunning) {
+            await prisma.ingestionJob.update({
+              where: { id: latestRunning.id },
+              data: { 
+                status: 'failed', 
+                finishedAt: new Date(),
+                detail: { error: String(error) }
+              }
+            });
+          }
         }
       }
     } catch (error) {

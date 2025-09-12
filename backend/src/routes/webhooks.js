@@ -71,18 +71,19 @@ router.post('/:topic', express.raw({ type: '*/*' }), async (req, res) => {
 
     if (topic.startsWith('orders')) {
       const o = payload;
+      const processedAtStr = o.processed_at || o.closed_at || o.updated_at || o.created_at || null;
       await prisma.order.upsert({
         where: { shopId_shopifyId: { shopId: shop.id, shopifyId: BigInt(o.id) } },
         update: {
           totalPrice: o.total_price,
-          processedAt: o.processed_at ? new Date(o.processed_at) : null,
+          processedAt: processedAtStr ? new Date(processedAtStr) : null,
         },
         create: {
           tenantId: shop.tenantId,
           shopId: shop.id,
           shopifyId: BigInt(o.id),
           totalPrice: o.total_price,
-          processedAt: o.processed_at ? new Date(o.processed_at) : null,
+          processedAt: processedAtStr ? new Date(processedAtStr) : null,
         },
       });
     }

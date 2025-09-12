@@ -1,5 +1,6 @@
 // backend/src/middleware/auth.js
 const jwt = require('jsonwebtoken');
+const { config } = require('../config');
 
 const authMiddleware = (req, res, next) => {
   const authHeader = req.headers.authorization;
@@ -9,8 +10,9 @@ const authMiddleware = (req, res, next) => {
 
   const token = authHeader.split(' ')[1];
   try {
-    // You'll need a JWT_SECRET in your .env file
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    // Use env secret or fallback to config default
+    const secret = process.env.JWT_SECRET || config.jwtSecret;
+    const decoded = jwt.verify(token, secret);
     req.user = decoded; // Attaches { userId, email, storeId } to the request
     next();
   } catch (error) {

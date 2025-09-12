@@ -1,8 +1,9 @@
 const express = require('express');
 const prisma = require('../services/prismaClient');
 const router = express.Router();
+const auth = require('../middleware/auth');
 
-router.get('/overview', async (req, res) => {
+router.get('/overview', auth, async (req, res) => {
   try {
     const { shopId, from, to } = req.query;
     const totalCustomers = await prisma.customer.count({ where: { shopId } });
@@ -42,7 +43,7 @@ router.get('/overview', async (req, res) => {
   }
 });
 
-router.get('/orders-by-date', async (req, res) => {
+router.get('/orders-by-date', auth, async (req, res) => {
   try {
     const { shopId, from, to } = req.query;
     
@@ -82,7 +83,7 @@ router.get('/orders-by-date', async (req, res) => {
   }
 });
 
-router.get('/top-customers', async (req, res) => {
+router.get('/top-customers', auth, async (req, res) => {
   try {
     const { shopId, limit = 5 } = req.query;
     const rows = await prisma.customer.findMany({
@@ -108,7 +109,7 @@ router.get('/top-customers', async (req, res) => {
 });
 
 // Get customer behavior analytics
-router.get('/behavior-analytics', async (req, res) => {
+router.get('/behavior-analytics', auth, async (req, res) => {
   try {
     const { shopId, from, to } = req.query;
     
@@ -178,7 +179,7 @@ router.get('/behavior-analytics', async (req, res) => {
 });
 
 // Get top engaged customers
-router.get('/top-engaged-customers', async (req, res) => {
+router.get('/top-engaged-customers', auth, async (req, res) => {
   try {
     const { shopId, limit = 10 } = req.query;
     
@@ -212,7 +213,7 @@ router.get('/top-engaged-customers', async (req, res) => {
 });
 
 // Get conversion funnel data
-router.get('/conversion-funnel', async (req, res) => {
+router.get('/conversion-funnel', auth, async (req, res) => {
   try {
     const { shopId } = req.query;
     
@@ -268,7 +269,7 @@ router.get('/conversion-funnel', async (req, res) => {
 });
 
 // Simulate custom events (for demo purposes)
-router.post('/simulate-events', async (req, res) => {
+router.post('/simulate-events', auth, async (req, res) => {
   try {
     const { shopId } = req.body;
     
