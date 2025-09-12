@@ -7,11 +7,23 @@ router.get('/overview', async (req, res) => {
     const { shopId, from, to } = req.query;
     const totalCustomers = await prisma.customer.count({ where: { shopId } });
     const totalOrders = await prisma.order.count({
-      where: { shopId, processedAt: { gte: new Date(from), lte: new Date(to) } },
+      where: {
+        shopId,
+        OR: [
+          { processedAt: { gte: new Date(from), lte: new Date(to) } },
+          { AND: [{ processedAt: null }, { createdAt: { gte: new Date(from), lte: new Date(to) } }] },
+        ],
+      },
     });
     const revenueAgg = await prisma.order.aggregate({
       _sum: { totalPrice: true },
-      where: { shopId, processedAt: { gte: new Date(from), lte: new Date(to) } },
+      where: {
+        shopId,
+        OR: [
+          { processedAt: { gte: new Date(from), lte: new Date(to) } },
+          { AND: [{ processedAt: null }, { createdAt: { gte: new Date(from), lte: new Date(to) } }] },
+        ],
+      },
     });
 
     // Get recent custom events count (if customEvent model exists)
@@ -60,13 +72,15 @@ router.get('/orders-by-date', async (req, res) => {
       orderBy: { processedAt: 'asc' },
       select: {
         processedAt: true,
+        createdAt: true,
         totalPrice: true
       }
     });
 
     // Group orders by date
     const ordersByDate = orders.reduce((acc, order) => {
-      const date = order.processedAt?.toISOString().split('T')[0] || 'Unknown';
+      const ts = order.processedAt || order.createdAt;
+      const date = ts?.toISOString().split('T')[0] || 'Unknown';
       if (!acc[date]) {
         acc[date] = { day: date, orders: 0, revenue: 0 };
       }
