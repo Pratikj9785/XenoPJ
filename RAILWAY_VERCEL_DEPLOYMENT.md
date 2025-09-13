@@ -118,9 +118,12 @@ If you see "npm: command not found" or "The executable `cd` could not be found":
 
 ### Force Nixpacks Usage
 If Railway keeps trying to use Docker:
-1. Go to Railway dashboard → Settings → Build
-2. **Uncheck "Use Dockerfile"**
-3. Railway will automatically use Nixpacks with the `nixpacks.toml` configuration
+1. **Dockerfile has been removed** - Railway will now use Nixpacks automatically
+2. If it still fails, go to Railway dashboard → Settings → Build
+3. **Uncheck "Use Dockerfile"** (should be grayed out now)
+4. Railway will automatically use Nixpacks with the `nixpacks.toml` configuration
+
+**Note**: The Dockerfile has been removed to force Railway to use Nixpacks instead.
 
 ### Frontend Issues
 - Check Vercel deployment logs
