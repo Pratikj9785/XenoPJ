@@ -1,0 +1,12 @@
+{
+  "name": "xeno",
+  "version": "1.0.0",
+  "description": "Xeno Analytics Platform",
+  "scripts": {
+    "build": "cd backend && npm install && npx prisma generate",
+    "start": "cd backend && npx prisma migrate deploy && npm start"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

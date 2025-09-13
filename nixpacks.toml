@@ -1,10 +1,8 @@
 [phases.setup]
-nixPkgs = ["nodejs_18", "npm"]
+nixPkgs = ["nodejs", "npm"]
 
 [phases.install]
-workingDirectory = "backend"
-cmds = ["npm install", "npx prisma generate"]
+cmds = ["cd backend && npm ci", "cd backend && npx prisma generate"]
 
 [start]
-workingDirectory = "backend"
-cmd = "npx prisma migrate deploy && npm start"
+cmd = "cd backend && npx prisma migrate deploy && npm start"
