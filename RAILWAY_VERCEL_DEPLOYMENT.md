@@ -43,12 +43,13 @@ NODE_ENV=production
 ### 1.5 Deploy
 Railway will automatically:
 - Use Nixpacks builder (configured in `nixpacks.toml`)
+- Install Node.js (npm comes bundled)
 - Install dependencies in backend directory
 - Run `npx prisma generate`
 - Run `npx prisma migrate deploy`
 - Start your backend server
 
-**Note**: The `nixpacks.toml` file configures the build process, and `railway.json` provides additional deployment settings.
+**Note**: The `nixpacks.toml` file configures the build process, and `.railwayignore` ensures only backend files are deployed.
 
 Your backend will be available at: `https://your-app-name.railway.app`
 

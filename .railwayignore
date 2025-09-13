@@ -4,3 +4,7 @@ node_modules/
 *.md
 .git/
 .gitignore
+test-dashboard.js
+DEPLOYMENT.md
+RAILWAY_VERCEL_DEPLOYMENT.md
+env.example
