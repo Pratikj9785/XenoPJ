@@ -19,12 +19,5 @@
       "src": "/(.*)",
       "dest": "frontend/$1"
     }
-  ],
-  "env": {
-    "DATABASE_URL": "@database_url",
-    "JWT_SECRET": "@jwt_secret",
-    "APP_URL": "@app_url",
-    "WEBHOOK_SECRET": "@webhook_secret",
-    "NODE_ENV": "production"
-  }
+  ]
 }
