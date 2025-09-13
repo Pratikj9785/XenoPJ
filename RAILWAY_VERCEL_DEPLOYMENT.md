@@ -109,11 +109,18 @@ NEXT_PUBLIC_API_URL=https://your-app-name.railway.app
 - Ensure all environment variables are set
 
 ### Docker Build Errors
-If you see "npm: command not found" or Docker build errors:
-1. Railway will automatically use Nixpacks (configured in `railway.json`)
+If you see "npm: command not found" or "The executable `cd` could not be found":
+1. Railway should automatically use Nixpacks (configured in `nixpacks.toml`)
 2. If it still fails, go to Railway dashboard → Settings → Build
-3. Set Build Command to: `cd backend && npm install && npx prisma generate`
-4. Set Start Command to: `cd backend && npx prisma migrate deploy && npm start`
+3. **Disable Docker**: Uncheck "Use Dockerfile" option
+4. Set Build Command to: `cd backend && npm install && npx prisma generate`
+5. Set Start Command to: `cd backend && npx prisma migrate deploy && npm start`
+
+### Force Nixpacks Usage
+If Railway keeps trying to use Docker:
+1. Go to Railway dashboard → Settings → Build
+2. **Uncheck "Use Dockerfile"**
+3. Railway will automatically use Nixpacks with the `nixpacks.toml` configuration
 
 ### Frontend Issues
 - Check Vercel deployment logs
