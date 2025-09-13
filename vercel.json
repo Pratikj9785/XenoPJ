@@ -19,6 +19,5 @@
       "src": "/(.*)",
       "dest": "frontend/$1"
     }
-  ],
-  "outputDirectory": "frontend/.next"
+  ]
 }
