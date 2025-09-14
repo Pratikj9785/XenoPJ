@@ -88,9 +88,9 @@ router.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
     // Find user
-    const user = await prisma.user.findUnique({ 
+    const user = await prisma.user.findUnique({
       where: { email },
-      include: { shops: true }
+      include: { tenant: { include: { shops: true } } }
     });
 
     if (!user) {
@@ -104,7 +104,7 @@ router.post('/login', async (req, res) => {
     }
 
     // Get primary shop (for demo, use first shop)
-    const primaryShop = user.shops[0];
+    const primaryShop = user.tenant?.shops?.[0];
     if (!primaryShop) {
       return res.status(400).json({ message: 'No shop associated with this user' });
     }
