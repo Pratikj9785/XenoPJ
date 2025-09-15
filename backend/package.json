@@ -7,7 +7,7 @@
     "dev": "nodemon src/index.js",
     "start": "node src/index.js",
     "build": "node vercel-build.js",
-    "postinstall": "prisma generate",          
+    "postinstall": "prisma generate",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:deploy": "prisma migrate deploy",
@@ -15,7 +15,7 @@
     "add-data": "node scripts/addMoreData.js"
   },
   "dependencies": {
-    "@prisma/client": "^5.22.0",                
+    "@prisma/client": "^5.22.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
@@ -23,7 +23,8 @@
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
     "node-cron": "^3.0.3",
-    "node-fetch": "^2.7.0"
+    "node-fetch": "^2.7.0",
+    "socket.io": "^4.8.1"
   },
   "devDependencies": {
     "nodemon": "^3.0.2",
