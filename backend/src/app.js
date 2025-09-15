@@ -7,6 +7,7 @@ const shops = require('./routes/shops');
 const ingest = require('./routes/ingest');
 const metrics = require('./routes/metrics');
 const webhooks = require('./routes/webhooks');
+const fake = require('./routes/fake');
 
 const app = express();
 app.use(cors({
@@ -26,6 +27,7 @@ app.use('/api/auth', auth);
 app.use('/api', shops);
 app.use('/api/ingest', ingest);
 app.use('/api/metrics', metrics);
+app.use('/api/fake', fake);
 
 app.get('/health', (_, res) => res.json({ ok: true }));
 
