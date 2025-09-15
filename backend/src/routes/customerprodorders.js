@@ -22,6 +22,9 @@ router.post('/customers', auth, async (req, res) => {
     }
 
     const tenantId = await getTenantId(shopId);
+    if (!tenantId) {
+      return res.status(400).json({ message: 'Invalid shopId' });
+    }
     let inserted = 0,
       updated = 0;
 
@@ -67,6 +70,9 @@ router.post('/products', auth, async (req, res) => {
       return res.status(400).json({ message: 'shopId and records[] required' });
     }
     const tenantId = await getTenantId(shopId);
+    if (!tenantId) {
+      return res.status(400).json({ message: 'Invalid shopId' });
+    }
     let inserted = 0,
       updated = 0;
 
@@ -114,6 +120,9 @@ router.post('/orders', auth, async (req, res) => {
       return res.status(400).json({ message: 'shopId and records[] required' });
     }
     const tenantId = await getTenantId(shopId);
+    if (!tenantId) {
+      return res.status(400).json({ message: 'Invalid shopId' });
+    }
     let inserted = 0,
       updated = 0;
 

@@ -28,6 +28,8 @@ app.use('/api', shops);
 app.use('/api/ingest', ingest);
 app.use('/api/metrics', metrics);
 app.use('/api/fake', fake);
+// Expose data ingestion endpoints under /api as well
+app.use('/api', fake);
 
 app.get('/health', (_, res) => res.json({ ok: true }));
 

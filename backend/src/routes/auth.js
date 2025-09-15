@@ -2,6 +2,7 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const prisma = require('../services/prismaClient');
+const auth = require('../middleware/auth');
 
 const router = express.Router();
 
@@ -142,7 +143,7 @@ router.post('/login', async (req, res) => {
 });
 
 // Add shop to existing user
-router.post('/add-shop', async (req, res) => {
+router.post('/add-shop', auth, async (req, res) => {
   try {
     const { shopDomain, shopName, accessToken } = req.body;
     const userId = req.user.userId; // From auth middleware
