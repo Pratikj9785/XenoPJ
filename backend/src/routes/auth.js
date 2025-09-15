@@ -44,7 +44,7 @@ router.post('/register', async (req, res) => {
           tenantId: tenant.id,
           shopDomain,
           name: shopName,
-          accessToken: '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', // Placeholder; replace with OAuth token
+          accessToken: process.env.SHOPIFY_ACCESS_TOKEN, // Placeholder; replace with OAuth token
         },
       });
 
